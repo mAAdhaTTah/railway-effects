@@ -1,11 +1,11 @@
 import type { ZodError, ZodTypeAny, z } from "zod";
-import { BaseError } from "./error";
-import { AsyncResult, error, success } from "./result";
+import { BaseError } from "@railway-effects/error";
+import { AsyncResult, error, success } from "@railway-effects/result";
 
 /**
  * Error returned by {@link parseWithResult}.
  */
-export class ParseError<T = any> extends BaseError {
+export class ParseError<T = unknown> extends BaseError {
   readonly type = "parse";
   zod: ZodError<T>;
 

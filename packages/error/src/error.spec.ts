@@ -4,7 +4,7 @@ import { BaseError, UnknownError } from "./error";
 describe("error", () => {
   describe("BaseError", () => {
     it("should require type to extend", () => {
-      // @ts-expect-error
+      // @ts-expect-error we are explicitly testing the error
       class TestError extends BaseError {}
 
       expectTypeOf<TestError["type"]>().toBeString();

@@ -1,0 +1,5 @@
+{
+  "extends": "@railway-effects/typescript-config/base.json",
+  "include": ["src/*.ts", "jest"],
+  "exclude": ["node_modules", "dist"]
+}

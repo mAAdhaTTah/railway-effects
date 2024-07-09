@@ -1,4 +1,4 @@
-import { BaseError } from "./error";
+import { BaseError } from "@railway-effects/error";
 
 /**
  * Result in the success state.
@@ -31,16 +31,14 @@ export type AsyncResult<T, E> = Promise<Result<T, E>>;
 /**
  * Extract the data from the Result in the success state.
  */
-export type ExtractSuccessValue<R> = R extends AsyncResult<infer T, any>
-  ? T
-  : never;
+export type ExtractSuccessValue<R> =
+  R extends AsyncResult<infer T, unknown> ? T : never;
 
 /**
  * Extract the error from the Result in the error state.
  */
-export type ExtractErrorValue<R> = R extends AsyncResult<any, infer E>
-  ? E
-  : never;
+export type ExtractErrorValue<R> =
+  R extends AsyncResult<unknown, infer E> ? E : never;
 
 /**
  * Creates a new Result in the success state.
@@ -210,7 +208,9 @@ export async function orElse<T, E, U, F>(
  * andThenSeq(result) === result;
  * ```
  */
-export function andThenSeq<A extends AsyncResult<any, any>>(result: A): A;
+export function andThenSeq<A extends AsyncResult<unknown, unknown>>(
+  result: A,
+): A;
 /**
  * @overload
  *
@@ -221,8 +221,8 @@ export function andThenSeq<A extends AsyncResult<any, any>>(result: A): A;
  * ```
  */
 export function andThenSeq<
-  A extends AsyncResult<any, any>,
-  B extends AsyncResult<any, any>,
+  A extends AsyncResult<unknown, unknown>,
+  B extends AsyncResult<unknown, unknown>,
 >(
   result: A,
   fn1: (input: ExtractSuccessValue<A>) => B,
@@ -243,9 +243,9 @@ export function andThenSeq<
  * ```
  */
 export function andThenSeq<
-  A extends AsyncResult<any, any>,
-  B extends AsyncResult<any, any>,
-  C extends AsyncResult<any, any>,
+  A extends AsyncResult<unknown, unknown>,
+  B extends AsyncResult<unknown, unknown>,
+  C extends AsyncResult<unknown, unknown>,
 >(
   result: A,
   fn1: (input: ExtractSuccessValue<A>) => B,
@@ -261,10 +261,10 @@ export function andThenSeq<
  * please file an [issue](https://github.com/mAAdhaTTah/railway-effects/issues).
  */
 export function andThenSeq<
-  A extends AsyncResult<any, any>,
-  B extends AsyncResult<any, any>,
-  C extends AsyncResult<any, any>,
-  D extends AsyncResult<any, any>,
+  A extends AsyncResult<unknown, unknown>,
+  B extends AsyncResult<unknown, unknown>,
+  C extends AsyncResult<unknown, unknown>,
+  D extends AsyncResult<unknown, unknown>,
 >(
   result: A,
   fn1: (input: ExtractSuccessValue<A>) => B,
@@ -281,11 +281,11 @@ export function andThenSeq<
  * @overload
  */
 export function andThenSeq<
-  A extends AsyncResult<any, any>,
-  B extends AsyncResult<any, any>,
-  C extends AsyncResult<any, any>,
-  D extends AsyncResult<any, any>,
-  E extends AsyncResult<any, any>,
+  A extends AsyncResult<unknown, unknown>,
+  B extends AsyncResult<unknown, unknown>,
+  C extends AsyncResult<unknown, unknown>,
+  D extends AsyncResult<unknown, unknown>,
+  E extends AsyncResult<unknown, unknown>,
 >(
   result: A,
   fn1: (input: ExtractSuccessValue<A>) => B,
@@ -324,11 +324,12 @@ export function andThenSeq<
  *          or in error state if an error prevented the sequence from completing
  */
 export function andThenSeq(
-  result: any,
-  ...fns: ((r: any) => AsyncResult<any, any>)[]
+  result: Result<unknown, unknown>,
+  ...fns: ((r: unknown) => AsyncResult<unknown, unknown>)[]
 ): unknown {
   return fns.reduce(
-    (acc, fn) => acc.then((result: any) => andThen(result, fn)),
+    (acc, fn) =>
+      acc.then((result: Result<unknown, unknown>) => andThen(result, fn)),
     Promise.resolve(result),
   );
 }
@@ -347,7 +348,7 @@ export function andThenSeq(
  * @returns Result data if in success state
  * @throws {@link ResultUnwrapError} if in error state
  */
-export function unwrap<T>(result: Result<T, any>, message: string) {
+export function unwrap<T>(result: Result<T, unknown>, message: string) {
   if (result.type === "error")
     throw new ResultUnwrapError(message, { cause: result.error });
   return result.data;
@@ -362,7 +363,7 @@ export function unwrap<T>(result: Result<T, any>, message: string) {
  * @returns Result error if in error state
  * @throws {@link ResultUnwrapError} if in success state
  */
-export function unwrapError<E>(result: Result<any, E>, message: string) {
+export function unwrapError<E>(result: Result<unknown, E>, message: string) {
   if (result.type === "success")
     throw new ResultUnwrapError(message, { cause: result.data });
   return error;
@@ -376,7 +377,7 @@ export function unwrapError<E>(result: Result<any, E>, message: string) {
  * @param or Replacement value
  * @returns Result data if in success state, or `or` value if in error state
  */
-export function unwrapOr<T, U>(result: Result<T, any>, or: U) {
+export function unwrapOr<T, U>(result: Result<T, unknown>, or: U) {
   return match(result, {
     success: (result) => result.data,
     error: () => or,

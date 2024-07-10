@@ -1,7 +1,7 @@
 import { expectTypeOf } from "expect-type";
 import { ParseError, parseWithResult } from "./zod";
 import { z } from "zod";
-import { Result, error, success } from "./result";
+import { Result, error, success } from "@railway-effects/result";
 
 describe("zod", () => {
   describe("parseWithResult", () => {

@@ -1,5 +1,5 @@
 import { expectTypeOf } from "expect-type";
-import { UnknownError } from "./error";
+import { UnknownError } from "@railway-effects/error";
 import {
   ErrorResult,
   Result,

@@ -1,6 +1,9 @@
 /** @type {import('typedoc').TypeDocOptions} */
 module.exports = {
-  entryPoints: ["src/error.ts", "src/result.ts", "src/zod.ts"],
+  entryPoints: ["packages/*"],
+  exclude: ["./packages/typescript-config", "./packages/eslint-config"],
+  entryPointStrategy: "packages",
   excludeTags: ["@overload"],
+  tsconfig: "./tsconfig.docs.json",
   out: "doc",
 };

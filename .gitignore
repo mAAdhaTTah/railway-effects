@@ -131,3 +131,6 @@ dist
 
 # docs builds
 doc
+
+# TurboRepo
+.turbo

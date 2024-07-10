@@ -6,7 +6,7 @@ import { AsyncResult, error, success } from "@railway-effects/result";
  * Error returned by {@link parseWithResult}.
  */
 export class ParseError<T = unknown> extends BaseError {
-  readonly type = "parse";
+  readonly code = "PARSE";
   zod: ZodError<T>;
 
   constructor(message: string, { zod }: { zod: ZodError<T> }) {

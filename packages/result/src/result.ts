@@ -415,14 +415,14 @@ export function fromResults<T, E>(
  * Error thrown when {@link unwrap} or {@link unwrapError} fail to unwrap the Result.
  */
 export class ResultUnwrapError extends BaseError {
-  readonly type = "result_unwrap";
+  readonly code = "RESULT_UNWRAP";
 }
 
 /**
  * Error returned when {@link fromResults} includes error states in its results.
  */
 export class AggregateResultsError<T, E> extends BaseError {
-  readonly type = "aggregate_results";
+  readonly code = "AGGREGATE_RESULTS";
 
   successes: T[];
   errors: E[];

@@ -7,21 +7,21 @@ describe("error", () => {
       // @ts-expect-error we are explicitly testing the error
       class TestError extends BaseError {}
 
-      expectTypeOf<TestError["type"]>().toBeString();
+      expectTypeOf<TestError["code"]>().toBeString();
     });
 
     it("should type as literal", () => {
       class TestError extends BaseError {
-        readonly type = "test";
+        readonly code = "TEST";
       }
 
-      expectTypeOf<TestError["type"]>().toEqualTypeOf<"test">();
+      expectTypeOf<TestError["code"]>().toEqualTypeOf<"TEST">();
     });
   });
 
   describe("UnknownError", () => {
     it("should type as literal", () => {
-      expectTypeOf<UnknownError["type"]>().toEqualTypeOf<"unknown">();
+      expectTypeOf<UnknownError["code"]>().toEqualTypeOf<"UNKNOWN">();
     });
 
     it("should construct a UnknownError with cause", () => {

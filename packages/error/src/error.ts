@@ -1,19 +1,22 @@
 /**
  * The abstract BaseError class is the root of all your error classes, It ensures
- * cause is ponyfilled and enforces the requirement for adding a `type` property.
+ * cause is ponyfilled and enforces the requirement for adding a `code` property.
  * This will be how you handle particular errors caused in your pipeline.
  *
+ * `code` is typically in SCREAMING_SNAKE_CASE. You can see
+ * [example codes from Nodejs](https://nodejs.org/api/errors.html#nodejs-error-codes).
+ *
  * @example
- * Make sure the child class sets a `readonly type` string literal property.
+ * Make sure the child class sets a `readonly code` string literal property.
  *
  * ```ts
  * class ExampleError extends BaseError {
- *   readonly type = "example";
+ *   readonly code = "EXAMPLE";
  * }
  * ```
  */
 export abstract class BaseError extends Error {
-  abstract readonly type: string;
+  abstract readonly code: string;
   /**
    * @hidden
    */
@@ -52,5 +55,5 @@ export abstract class BaseError extends Error {
  * ```
  */
 export class UnknownError extends BaseError {
-  readonly type = "unknown";
+  readonly code = "UNKNOWN";
 }

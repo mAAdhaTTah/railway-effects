@@ -105,15 +105,15 @@ export async function tryAsync<T, E>(
 export function match<T, E, U, F>(
   result: Result<T, E>,
   matcher: {
-    success: (result: SuccessResult<T>) => U;
-    error: (result: ErrorResult<E>) => F;
+    success: (data: T) => U;
+    error: (error: E) => F;
   },
 ): U | F {
   switch (result.type) {
     case "success":
-      return matcher.success(result);
+      return matcher.success(result.data);
     case "error":
-      return matcher.error(result);
+      return matcher.error(result.error);
     /* istanbul ignore next */
     default:
       throw new ReferenceError(`Invalid matcher passed to match`);
@@ -138,10 +138,8 @@ export function map<T, E, U>(
   result: Result<T, E>,
   cb: (val: T) => U,
 ): Result<U, E> {
-  return match(result, {
-    success: ({ data }) => success(cb(data)),
-    error: (result) => result,
-  });
+  if (result.type === "success") return success(cb(result.data));
+  return result;
 }
 
 /**
@@ -162,10 +160,8 @@ export function mapError<T, E, U>(
   result: Result<T, E>,
   cb: (val: E) => U,
 ): Result<T, U> {
-  return match(result, {
-    success: (result) => result,
-    error: ({ error: e }) => error(cb(e)),
-  });
+  if (result.type === "error") return error(cb(result.error));
+  return result;
 }
 
 /**
@@ -183,20 +179,16 @@ export async function andThen<T, E, U, F>(
   result: Result<T, E>,
   cb: (data: T) => AsyncResult<U, F>,
 ): AsyncResult<U, E | F> {
-  return match(result, {
-    success: ({ data }) => cb(data),
-    error: (result) => result,
-  });
+  if (result.type === "success") return cb(result.data);
+  return result;
 }
 
 export async function orElse<T, E, U, F>(
   result: Result<T, E>,
   cb: (error: E) => AsyncResult<U, F>,
 ): AsyncResult<T | U, F> {
-  return match(result, {
-    success: (result) => result,
-    error: ({ error }) => cb(error),
-  });
+  if (result.type === "error") return cb(result.error);
+  return result;
 }
 
 /**
@@ -379,7 +371,7 @@ export function unwrapError<E>(result: Result<unknown, E>, message: string) {
  */
 export function unwrapOr<T, U>(result: Result<T, unknown>, or: U) {
   return match(result, {
-    success: (result) => result.data,
+    success: (data) => data,
     error: () => or,
   });
 }
@@ -402,8 +394,8 @@ export function fromResults<T, E>(
   const errors: E[] = [];
   for (const result of results) {
     match(result, {
-      success: ({ data }) => successes.push(data),
-      error: ({ error }) => errors.push(error),
+      success: (data) => successes.push(data),
+      error: (error) => errors.push(error),
     });
   }
   return errors.length > 0

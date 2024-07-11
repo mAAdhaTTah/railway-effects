@@ -5,8 +5,8 @@ import { AsyncResult, error, success } from "@railway-effects/result";
 /**
  * Error returned by {@link parseWithResult}.
  */
-export class ParseError<T = unknown> extends BaseError {
-  readonly code = "PARSE";
+export class ZodParseError<T = unknown> extends BaseError {
+  readonly code = "ZOD_PARSE";
   zod: ZodError<T>;
 
   constructor(message: string, { zod }: { zod: ZodError<T> }) {
@@ -22,17 +22,17 @@ export class ParseError<T = unknown> extends BaseError {
  * @param schema Zod schema to parse against
  * @param value Value to parse
  * @returns Result in success state with parsed data
- *          or in error state with {@link ParseError}
+ *          or in error state with {@link ZodParseError}
  *          containing the returned ZodError
  */
 export const parseWithResult = async <T extends ZodTypeAny>(
   schema: T,
   value: unknown,
-): AsyncResult<z.infer<T>, ParseError<z.infer<T>>> => {
+): AsyncResult<z.infer<T>, ZodParseError<z.infer<T>>> => {
   const { success: s, data, error: e } = await schema.safeParseAsync(value);
   if (s) return success(data);
   return error(
-    new ParseError(`Failed to parse ${schema.description}`, {
+    new ZodParseError(`Failed to parse ${schema.description}`, {
       zod: e,
     }),
   );

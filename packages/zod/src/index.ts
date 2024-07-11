@@ -1,1 +1,1 @@
-export { ParseError, parseWithResult } from "./zod";
+export { ZodParseError, parseWithResult } from "./zod";

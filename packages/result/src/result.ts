@@ -320,8 +320,7 @@ export function andThenSeq(
   ...fns: ((r: unknown) => AsyncResult<unknown, unknown>)[]
 ): unknown {
   return fns.reduce(
-    (acc, fn) =>
-      acc.then((result: Result<unknown, unknown>) => andThen(result, fn)),
+    (acc, fn) => acc.then((result) => andThen(result, fn)),
     Promise.resolve(result),
   );
 }
@@ -381,13 +380,10 @@ export function unwrapOr<T, U>(result: Result<T, unknown>, or: U) {
  * Results are in the success state, or a Result of an {@link AggregateResultsError}
  * if any Result is in the error state.
  *
- * @todo change the name of this function
- * @alpha
- *
  * @param results Array of results to transform
  * @returns
  */
-export function fromResults<T, E>(
+export function aggregateResults<T, E>(
   results: Result<T, E>[],
 ): Result<T[], AggregateResultsError<T, E>> {
   const successes: T[] = [];
@@ -411,7 +407,7 @@ export class ResultUnwrapError extends BaseError {
 }
 
 /**
- * Error returned when {@link fromResults} includes error states in its results.
+ * Error returned when {@link aggregateResults} includes error states in its results.
  */
 export class AggregateResultsError<T, E> extends BaseError {
   readonly code = "AGGREGATE_RESULTS";

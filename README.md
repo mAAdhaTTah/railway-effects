@@ -20,8 +20,8 @@ For a given effect, you'll need to define a few parts for it. Let's use an API c
 import { UnknownError } from "@railway-effects/error";
 import * as R from "@railway-effects/result";
 
-const getUsers = (): R.AsyncResult<unknown, UnknownError> => {
-  return R.tryAsync(
+const getUsers = async (): R.AsyncResult<unknown, UnknownError> => {
+  return await R.tryAsync(
     async () => {
       const response = await fetch("/api/users");
       const body = await response.json();
@@ -62,8 +62,11 @@ class JSONParseError extends BaseError {
   readonly code = "JSON_PARSE";
 }
 
-const getUsers = (): R.AsyncResult<unknown, FetchError | JSONParseError> => {
-  const result = R.tryAsync(
+const getUsers = async (): R.AsyncResult<
+  unknown,
+  FetchError | JSONParseError
+> => {
+  const result = await R.tryAsync(
     async () => fetch("/api/users"),
     (error) =>
       new FetchError("A fetch error occurred getting users", {
@@ -71,7 +74,7 @@ const getUsers = (): R.AsyncResult<unknown, FetchError | JSONParseError> => {
       }),
   );
 
-  return R.andThen(result, (response) =>
+  return await R.andThen(result, (response) =>
     R.tryAsync(
       () => response.json(),
       (error) =>
@@ -132,7 +135,7 @@ const getUsers = (): R.AsyncResult<
   z.infer<typeof UserBodySchema>,
   FetchError | JSONParseError | ParseError
 > => {
-  const result = R.tryAsync(
+  const result = await R.tryAsync(
     async () => fetch("/api/users"),
     (error) =>
       new FetchError("A fetch error occurred getting users", {
@@ -140,7 +143,7 @@ const getUsers = (): R.AsyncResult<
       }),
   );
 
-  const result1 = R.andThen(result, (response) =>
+  const result1 = await R.andThen(result, (response) =>
     R.tryAsync(
       () => response.json(),
       (error) =>
@@ -148,7 +151,9 @@ const getUsers = (): R.AsyncResult<
     ),
   );
 
-  return R.andThen(result1, (body) => parseWithResult(UserBodySchema, body));
+  return await R.andThen(result1, (body) =>
+    parseWithResult(UserBodySchema, body),
+  );
 };
 ```
 
@@ -191,7 +196,7 @@ const getUsers = (): R.AsyncResult<
   z.infer<typeof UserBodySchema>,
   FetchError | JSONParseError | ParseError
 > => {
-  return R.andThenSeq(
+  return await R.andThenSeq(
     R.tryAsync(
       async () => fetch("/api/users"),
       (error) =>
@@ -216,11 +221,17 @@ Now, each callback is called only if the previous step returns a Result in the s
 
 Inspired by Rust's `Result` and other functional-style error handling, `railway-effects` attempts to implement a version of this in JavaScript/TypeScript in a way that feels more native to the language and easy to understand for developers otherwise unfamiliar with the paradigm. To those ends, the library has a few underlying principles.
 
+### Railway-Oriented Programming
+
+This is where the library gets its name: [Railway-Oriented Programming](https://fsharpforfunandprofit.com/rop/)
+
 ### Avoid Complex Functional Paradigms
 
 While functional programming provides a strong foundation for solving a variety of programming tasks, without the requisite background knowledge in the underlying mathematical concepts that underpin functional programming, it can be very challenging for new developers to understand the control flow relative to the imperative style (with `try/catch`) that they're used to.
 
 `railway-effects` already represents a departure from a more traditional imperative approach, so the goal of the library is to make this useful & understandable with a minimal reliance on deep functional concepts. This specifically means no currying, instead favoring a data-first API design that is comfortable to your typical `lodash` user.
+
+Additionally, the library relies on the Promise as its async primitive, eschewing lazy effects in favor of JavaScript-native async flows.
 
 ### Build for the Future
 

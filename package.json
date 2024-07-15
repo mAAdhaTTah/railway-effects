@@ -11,12 +11,14 @@
     "lint": "turbo lint",
     "test": "turbo test",
     "ci": "pnpm check && turbo run lint test",
+    "shipit": "pnpm run build && pnpm publish -r --access public",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "keywords": [],
   "author": "mAAdhaTTah <jamesorodig@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@changesets/cli": "^2.27.7",
     "prettier": "^3.3.2",
     "turbo": "^2.0.6",
     "typedoc": "^0.26.3",

@@ -6,6 +6,11 @@
     "lint": "eslint . --max-warnings 0",
     "test": "jest"
   },
+  "files": [
+    "src/*",
+    "dist/*",
+    "package.json"
+  ],
   "dependencies": {
     "@railway-effects/error": "workspace:*",
     "@railway-effects/result": "workspace:*",

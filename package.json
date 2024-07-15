@@ -11,7 +11,7 @@
     "lint": "turbo lint",
     "test": "turbo test",
     "ci": "pnpm check && turbo run lint test",
-    "shipit": "pnpm run build && pnpm publish -r --access public",
+    "shipit": "pnpm run build && pnpm changeset publish",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "keywords": [],
